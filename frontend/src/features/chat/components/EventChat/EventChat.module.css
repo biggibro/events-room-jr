@@ -1,0 +1,81 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 18rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  max-height: 22rem;
+  padding-right: var(--space-1);
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+}
+
+.username {
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.text {
+  font-size: 0.9rem;
+  color: var(--color-on-surface);
+}
+
+.error {
+  font-size: 0.85rem;
+  color: var(--color-error, #c62828);
+  margin: 0;
+}
+
+.lockedMessage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-on-surface-variant);
+  padding: var(--space-4);
+}
+
+.form {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.field {
+  flex: 1;
+}
+
+.send {
+  flex-shrink: 0;
+}

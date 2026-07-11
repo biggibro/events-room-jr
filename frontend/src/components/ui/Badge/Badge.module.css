@@ -1,0 +1,55 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  backdrop-filter: blur(10px);
+}
+
+.official {
+  background: color-mix(in srgb, var(--color-primary-container) 22%, transparent);
+  color: var(--color-primary-fixed-dim);
+  border-color: color-mix(in srgb, var(--color-primary-container) 35%, transparent);
+}
+
+.community {
+  background: color-mix(in srgb, var(--color-secondary-container) 28%, transparent);
+  color: var(--color-secondary-fixed-dim);
+  border-color: color-mix(in srgb, var(--color-secondary-container) 45%, transparent);
+}
+
+.neutral {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+  border-color: color-mix(in srgb, white 8%, transparent);
+}
+
+.success {
+  background: color-mix(in srgb, #22c55e 18%, transparent);
+  color: #bbf7d0;
+  border-color: color-mix(in srgb, #22c55e 35%, transparent);
+}
+
+.danger {
+  background: color-mix(in srgb, #f87171 18%, transparent);
+  color: #fecaca;
+  border-color: color-mix(in srgb, #f87171 35%, transparent);
+}
+
+.limited {
+  background: color-mix(in srgb, #ff4d8d 22%, transparent);
+  color: #ffe4f3;
+  border-color: color-mix(in srgb, #ff4d8d 45%, transparent);
+}
+
+.bestseller {
+  background: color-mix(in srgb, #7c3aed 28%, transparent);
+  color: #ede9fe;
+  border-color: color-mix(in srgb, #7c3aed 45%, transparent);
+}

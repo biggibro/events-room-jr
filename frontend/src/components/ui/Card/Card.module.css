@@ -1,0 +1,4 @@
+.root {
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}

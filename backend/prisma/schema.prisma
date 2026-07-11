@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  user
+  admin
+  superadmin
+}
+
+enum EventStatus {
+  archived
+  registration_open
+  registration_closed
+  completed
+}
+
+enum SeatingType {
+  random
+  free
+}
+
+model Role {
+  id    String   @id @default(uuid())
+  name  RoleName @unique
+  users User[]
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  avatarUrl    String?  @map("avatar_url")
+  bio          String?
+  tagline      String?
+  roleId       String   @map("role_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  role              Role          @relation(fields: [roleId], references: [id])
+  createdLocations  Location[]    @relation("LocationCreatedBy")
+  createdEvents     Event[]       @relation("EventCreatedBy")
+  participants      Participant[]
+  winners           Winner[]      @relation("WinnerUser")
+  assignedWinners   Winner[]      @relation("WinnerAssignedBy")
+  block             UserBlock?    @relation("BlockedUser")
+  blocksIssued      UserBlock[]   @relation("BlockedByAdmin")
+  eventMessages     EventMessage[]
+
+  @@map("users")
+}
+
+model UserBlock {
+  id               String   @id @default(uuid())
+  userId           String   @unique @map("user_id")
+  blockedByAdminId String   @map("blocked_by_admin_id")
+  blockedAt        DateTime @default(now()) @map("blocked_at")
+
+  user           User @relation("BlockedUser", fields: [userId], references: [id], onDelete: Cascade)
+  blockedByAdmin User @relation("BlockedByAdmin", fields: [blockedByAdminId], references: [id])
+
+  @@map("user_blocks")
+}
+
+model Location {
+  id                String   @id @default(uuid())
+  name              String
+  address           String
+  description       String   @default("")
+  phone             String?
+  mapUrl            String?  @map("map_url")
+  isArchived        Boolean  @default(false) @map("is_archived")
+  createdByAdminId  String   @map("created_by_admin_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  createdByAdmin User    @relation("LocationCreatedBy", fields: [createdByAdminId], references: [id])
+  events         Event[]
+
+  @@map("locations")
+}
+
+model Event {
+  id                String      @id @default(uuid())
+  title             String
+  description       String
+  eventDate         String      @map("event_date")
+  eventTime         String      @map("event_time")
+  locationId        String      @map("location_id")
+  createdByAdminId  String      @map("created_by_admin_id")
+  status            EventStatus @default(archived)
+  maxParticipants   Int         @map("max_participants")
+  seatingType       SeatingType @default(free) @map("seating_type")
+  durationHours     Int         @default(3) @map("duration_hours")
+  imageUrl          String?     @map("image_url")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  location         Location      @relation(fields: [locationId], references: [id])
+  createdByAdmin   User          @relation("EventCreatedBy", fields: [createdByAdminId], references: [id])
+  participants   Participant[]
+  winners        Winner[]
+  messages       EventMessage[]
+
+  @@map("events")
+}
+
+model Participant {
+  id        String   @id @default(uuid())
+  eventId   String   @map("event_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guests Guest[]
+
+  @@unique([eventId, userId])
+  @@map("participants")
+}
+
+model Guest {
+  id            String   @id @default(uuid())
+  participantId String   @map("participant_id")
+  name          String
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  winners     Winner[]
+
+  @@map("guests")
+}
+
+model Winner {
+  id                String   @id @default(uuid())
+  eventId           String   @map("event_id")
+  userId            String?  @map("user_id")
+  guestId           String?  @map("guest_id")
+  count             Int      @default(1)
+  assignedByAdminId String   @map("assigned_by_admin_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  event           Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user            User?  @relation("WinnerUser", fields: [userId], references: [id], onDelete: Cascade)
+  guest           Guest? @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  assignedByAdmin User   @relation("WinnerAssignedBy", fields: [assignedByAdminId], references: [id])
+
+  @@unique([eventId, userId])
+  @@unique([eventId, guestId])
+  @@map("winners")
+}
+
+model EventMessage {
+  id        String   @id @default(uuid())
+  eventId   String   @map("event_id")
+  userId    String   @map("user_id")
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, createdAt])
+  @@map("event_messages")
+}

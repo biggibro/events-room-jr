@@ -1,0 +1,206 @@
+.layout {
+  display: grid;
+  gap: var(--space-6);
+  padding-bottom: var(--space-12);
+  min-width: 0;
+  width: 100%;
+}
+
+@media (min-width: 1100px) {
+  .layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) minmax(0, 0.9fr);
+    align-items: start;
+  }
+}
+
+.hero {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  min-height: 16rem;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(11, 19, 38, 0.92), rgba(11, 19, 38, 0.45)),
+    var(--hero-image) center / cover no-repeat;
+  z-index: -1;
+}
+
+.heroTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.editHero {
+  margin-left: auto;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+  background: var(--color-surface-container-high);
+  display: grid;
+  place-items: center;
+  color: var(--color-primary-fixed-dim);
+  cursor: pointer;
+}
+
+.title {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  word-break: break-word;
+}
+
+.meta {
+  color: var(--color-on-surface-variant);
+  font-size: 0.95rem;
+}
+
+.prize {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--color-primary-fixed-dim);
+  text-shadow: 0 0 18px rgba(0, 218, 243, 0.35);
+}
+
+@media (min-width: 640px) {
+  .prize {
+    margin-left: auto;
+    font-size: 1.75rem;
+  }
+}
+
+.sectionTitle {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .statsRow {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, white 8%, transparent);
+  background: color-mix(in srgb, var(--color-surface-container) 55%, transparent);
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.statValueText {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(0.62rem, 2.4vw, 0.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .statValueText {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1rem;
+    letter-spacing: normal;
+  }
+}
+
+.participants {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding-bottom: var(--space-2);
+}
+
+.participationActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--color-on-surface-variant);
+}
+
+.priceTotal {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--color-primary-fixed-dim);
+  margin-top: var(--space-3);
+}
+
+.mapLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: var(--space-4);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-full);
+  border: 1px solid color-mix(in srgb, var(--color-on-surface) 35%, transparent);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.mapLink:hover {
+  border-color: var(--color-primary-fixed-dim);
+  color: var(--color-primary-fixed-dim);
+}

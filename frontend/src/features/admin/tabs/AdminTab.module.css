@@ -1,0 +1,155 @@
+.listHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0 0 var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid color-mix(in srgb, white 8%, transparent);
+}
+
+.totalCount {
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+}
+
+.totalCount strong {
+  color: var(--color-on-surface);
+  font-weight: 800;
+}
+
+.eventActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.eventActions > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.editBtn {
+  flex-shrink: 0;
+}
+
+.editLabelFull {
+  display: none;
+}
+
+.editLabelShort {
+  display: inline;
+}
+
+@media (min-width: 480px) {
+  .editLabelFull {
+    display: inline;
+  }
+
+  .editLabelShort {
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .eventActions {
+    width: auto;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .eventActions > :first-child {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.userActions > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .userActions {
+    width: auto;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .userActions > :first-child {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.metaLine {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+}
+
+.titleRow + .metaLine,
+.metaLine + .metaLine {
+  margin-top: 0.25rem;
+}
+
+.actionBtn {
+  margin-top: 0;
+}
+
+@media (min-width: 640px) {
+  .actionBtn {
+    margin-top: 0.5rem;
+  }
+}
+
+.avatarFallback {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--color-on-surface-variant);
+}
+
+.state {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px dashed color-mix(in srgb, white 12%, transparent);
+}
+
+.stateText {
+  margin: 0;
+  color: var(--color-on-surface-variant);
+}
+
+.createLocationBtn {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+}

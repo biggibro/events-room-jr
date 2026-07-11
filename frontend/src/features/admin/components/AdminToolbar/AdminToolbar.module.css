@@ -1,0 +1,121 @@
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .toolbar {
+    margin-bottom: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .toolbar {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .searchRow {
+    flex: 1;
+  }
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.segment {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-outline) 25%, transparent);
+  background: var(--color-surface-container-low);
+  gap: 0.15rem;
+}
+
+.segmentBtn {
+  border: none;
+  background: transparent;
+  color: var(--color-on-surface-variant);
+  padding: 0.5rem 0.4rem;
+  border-radius: var(--radius-md);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  cursor: pointer;
+  flex: 1 1 calc(50% - 0.15rem);
+  min-width: 0;
+  text-align: center;
+  line-height: 1.25;
+  white-space: normal;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+  .filters {
+    align-items: center;
+    width: auto;
+  }
+
+  .segment {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    width: auto;
+  }
+
+  .segmentBtn {
+    flex: 0 0 auto;
+    padding: 0.55rem 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}
+
+.segmentBtn:hover {
+  background: var(--color-surface-container-highest);
+}
+
+.segmentBtnActive {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+  box-shadow: var(--shadow-glow-secondary);
+}

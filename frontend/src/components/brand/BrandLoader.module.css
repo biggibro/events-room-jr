@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
+
+.inline {
+  padding: var(--space-6) var(--space-4);
+}
+
+.label {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-on-surface-variant);
+}

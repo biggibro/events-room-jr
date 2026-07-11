@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: events
+      POSTGRES_PASSWORD: events
+      POSTGRES_DB: events_room_jackaroo
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U events -d events_room_jackaroo']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      target: development
+    ports:
+      - '4000:4000'
+    environment:
+      DATABASE_URL: postgresql://events:events@db:5432/events_room_jackaroo
+      DATABASE_URL_TEST: postgresql://events:events@db:5432/events_room_jackaroo_test
+      JWT_SECRET: dev-access-secret-change-in-production
+      JWT_REFRESH_SECRET: dev-refresh-secret-change-in-production
+      SUPERADMIN_EMAIL: owner@example.com
+      PORT: '4000'
+      FRONTEND_URL: http://localhost:5173
+      NODE_ENV: development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npm install && npx prisma migrate deploy && npx prisma generate && npx prisma db seed && npm run dev"
+
+volumes:
+  pgdata:
+  uploads_data:

@@ -1,0 +1,1 @@
+CREATE DATABASE events_room_jackaroo_test;

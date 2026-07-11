@@ -1,0 +1,109 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-surface-dim) 60%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fadeIn 0.2s ease;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-header);
+  animation: slideUp 0.25s ease;
+}
+
+.dialog:hover {
+  border-color: color-mix(in srgb, white 10%, transparent);
+  box-shadow: var(--shadow-header);
+}
+
+.title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-on-surface);
+}
+
+.hint {
+  margin: 0 0 var(--space-4);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-on-surface-variant);
+}
+
+.slotsInfo {
+  margin: 0 0 var(--space-4);
+  font-size: 0.85rem;
+  color: var(--color-primary-fixed-dim);
+}
+
+.slotsError {
+  color: var(--color-error);
+}
+
+.guestList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.guestRow {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.guestRow > :first-child {
+  flex: 1;
+}
+
+.removeButton {
+  flex-shrink: 0;
+  margin-top: 1.65rem;
+}
+
+.error {
+  margin: 0 0 var(--space-4);
+  font-size: 0.85rem;
+  color: var(--color-error);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

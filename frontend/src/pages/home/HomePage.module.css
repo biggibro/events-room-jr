@@ -1,0 +1,107 @@
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  margin-top: -5rem;
+  margin-bottom: calc(-5.5rem - env(safe-area-inset-bottom, 0px));
+  padding-top: 5rem;
+  display: grid;
+  align-items: center;
+  isolation: isolate;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    margin-bottom: calc(-1 * var(--space-8));
+  }
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('../../assets/home-hero.png') center / cover no-repeat;
+}
+
+.bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.55) 38%,
+    rgba(0, 0, 0, 0.12) 68%,
+    transparent 100%
+  );
+}
+
+.shell {
+  padding-top: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-block: var(--space-8);
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding-block: var(--space-10);
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-full);
+  border: 1px solid color-mix(in srgb, var(--color-primary-fixed-dim) 45%, transparent);
+  background: color-mix(in srgb, var(--color-surface-container) 55%, transparent);
+  color: var(--color-on-surface);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-fixed-dim);
+  box-shadow: 0 0 10px var(--color-primary-fixed-dim);
+}
+
+.title {
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  line-height: 1.05;
+  color: var(--color-on-surface);
+}
+
+.lead {
+  color: var(--color-on-surface-variant);
+  font-size: 1.05rem;
+  max-width: 34rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}

@@ -1,0 +1,775 @@
+openapi: 3.0.0
+info:
+  title: Events Room Jackaroo API
+  version: 1.0.0
+  description: REST API для платформы Events Room Jackaroo
+servers:
+  - url: /api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AuthTokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/PublicUser'
+    PublicUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        bio:
+          type: string
+        tagline:
+          type: string
+        role:
+          type: string
+          enum: [user, admin, superadmin]
+    RegisterBody:
+      type: object
+      required: [email, password, name]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        name:
+          type: string
+          minLength: 1
+    LoginBody:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    RefreshBody:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+    ProfileUpdateBody:
+      type: object
+      properties:
+        name:
+          type: string
+        tagline:
+          type: string
+        bio:
+          type: string
+        avatarUrl:
+          type: string
+    CredentialsUpdateBody:
+      type: object
+      required: [currentPassword]
+      properties:
+        email:
+          type: string
+          format: email
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+          minLength: 6
+    LocationBody:
+      type: object
+      required: [name, address, description]
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        description:
+          type: string
+        phone:
+          type: string
+        mapUrl:
+          type: string
+          format: uri
+    EventCreateBody:
+      type: object
+      required: [title, description, eventDate, eventTime, locationId, maxParticipants]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        eventDate:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        eventTime:
+          type: string
+          pattern: '^\d{2}:\d{2}$'
+        locationId:
+          type: string
+          format: uuid
+        maxParticipants:
+          type: integer
+        seatingType:
+          type: string
+          enum: [random, free]
+        durationHours:
+          type: integer
+        imageUrl:
+          type: string
+    EventStatusBody:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [registration_open, registration_closed, completed]
+    JoinBody:
+      type: object
+      properties:
+        guestNames:
+          type: array
+          items:
+            type: string
+    RemoveParticipantsBody:
+      type: object
+      required: [userIds]
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    WinnersBody:
+      type: object
+      required: [winners]
+      properties:
+        winners:
+          type: array
+          items:
+            type: object
+            required: [count]
+            properties:
+              userId:
+                type: string
+                format: uuid
+              guestId:
+                type: string
+                format: uuid
+              count:
+                type: integer
+    AssignRoleBody:
+      type: object
+      required: [role]
+      properties:
+        role:
+          type: string
+          enum: [admin, user]
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        eventId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        username:
+          type: string
+        text:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Проверка доступности API
+      responses:
+        '200':
+          description: OK
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Регистрация
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterBody'
+      responses:
+        '201':
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Вход по email и паролю
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Обновление access-токена
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshBody'
+      responses:
+        '200':
+          description: Новый access-токен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+  /me:
+    get:
+      tags: [User]
+      summary: Профиль текущего пользователя
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Профиль
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicUser'
+    patch:
+      tags: [User]
+      summary: Обновить профиль
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateBody'
+      responses:
+        '200':
+          description: Обновлённый профиль
+  /me/stats:
+    get:
+      tags: [User]
+      summary: Личная статистика
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Статистика игрока
+  /me/credentials:
+    patch:
+      tags: [User]
+      summary: Сменить email и/или пароль
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialsUpdateBody'
+      responses:
+        '200':
+          description: Обновлённые учётные данные
+  /users/{id}/profile:
+    get:
+      tags: [User]
+      summary: Профиль пользователя по id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Профиль и статистика
+  /events:
+    get:
+      tags: [Events]
+      summary: Список публичных событий
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [ALL, registration_open, registration_closed, completed, archived]
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [newest, date]
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Список или пагинированный результат
+    post:
+      tags: [Events]
+      summary: Создать событие
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateBody'
+      responses:
+        '201':
+          description: Событие создано
+  /events/{id}:
+    get:
+      tags: [Events]
+      summary: Детали события
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Событие с участниками и победами
+    patch:
+      tags: [Events]
+      summary: Редактировать событие
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateBody'
+      responses:
+        '200':
+          description: Обновлённое событие
+  /events/{id}/status:
+    patch:
+      tags: [Events]
+      summary: Сменить статус события
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventStatusBody'
+      responses:
+        '200':
+          description: Событие с новым статусом
+  /events/{id}/archive:
+    patch:
+      tags: [Events]
+      summary: Архивировать событие
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Архивированное событие
+  /events/{id}/join:
+    post:
+      tags: [Participation]
+      summary: Записаться на событие или обновить список гостей
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinBody'
+      responses:
+        '200':
+          description: Обновлённое событие
+    delete:
+      tags: [Participation]
+      summary: Отменить запись
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Запись отменена
+  /events/{id}/participants:
+    delete:
+      tags: [Participation]
+      summary: Удалить участников батчем
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveParticipantsBody'
+      responses:
+        '200':
+          description: Обновлённый состав
+  /events/{id}/winners:
+    patch:
+      tags: [Events]
+      summary: Назначить или изменить победителей
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WinnersBody'
+      responses:
+        '200':
+          description: Список победителей
+  /events/{id}/messages:
+    get:
+      tags: [Chat]
+      summary: История сообщений чата события
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Список сообщений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessage'
+        '403':
+          description: Пользователь не записан на событие
+  /locations:
+    get:
+      tags: [Locations]
+      summary: Список локаций
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Список локаций
+    post:
+      tags: [Locations]
+      summary: Создать локацию
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationBody'
+      responses:
+        '201':
+          description: Локация создана
+  /locations/{id}:
+    get:
+      tags: [Locations]
+      summary: Детали локации
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Локация
+    patch:
+      tags: [Locations]
+      summary: Редактировать локацию
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationBody'
+      responses:
+        '200':
+          description: Обновлённая локация
+  /locations/{id}/archive:
+    patch:
+      tags: [Locations]
+      summary: Архивировать локацию
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Архивированная локация
+  /uploads/avatar:
+    post:
+      tags: [Uploads]
+      summary: Загрузить аватар
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: URL загруженного аватара
+  /uploads/event-cover:
+    post:
+      tags: [Uploads]
+      summary: Загрузить обложку события
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: URL обложки
+  /uploads/event-cover/{eventId}:
+    post:
+      tags: [Uploads]
+      summary: Загрузить обложку и привязать к событию
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: URL обложки
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: Список пользователей
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [ALL, user, admin, superadmin]
+        - in: query
+          name: blocked
+          schema:
+            type: string
+            enum: [ALL, blocked]
+      responses:
+        '200':
+          description: Список пользователей
+  /admin/users/{id}/role:
+    patch:
+      tags: [Admin]
+      summary: Назначить роль admin или user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRoleBody'
+      responses:
+        '200':
+          description: Обновлённый пользователь
+  /admin/users/{id}/block:
+    post:
+      tags: [Admin]
+      summary: Заблокировать пользователя
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Пользователь заблокирован
+    delete:
+      tags: [Admin]
+      summary: Разблокировать пользователя
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Пользователь разблокирован
